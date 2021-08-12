@@ -37,8 +37,15 @@ def get_data(html):
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
     for block in blocks:
-        name = block.find('div', class_='wants-card__header-title').text.strip()
-        if 'парс' in name or 'Парс' in name:
+        try:
+            name = block.find('div', class_='wants-card__header-title').text.strip()
+        except:
+            name = 'no name'
+        try:
+            description = block.find('div', class_='js-want-block-toggle-full').text.strip()
+        except:
+            description = 'no description'
+        if 'парс' in name or 'Парс' in name or 'парс' in description or 'Парс' in description:
             temp_price = block.find('div', class_='wants-card__header-price wants-card__price m-hidden').text.strip().split()
             price = temp_price[-3] + temp_price[-2]
             link = block.find('div', class_='wants-card__header-title').a['href']
@@ -84,9 +91,9 @@ def run():
 def main():
     while True:
         run()
-        sleep(uniform(200, 210))
-
+        x = uniform(200, 210)
+        sleep(x)
+        
 
 if __name__ == "__main__":
     main()
-
