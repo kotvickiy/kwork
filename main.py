@@ -1,9 +1,12 @@
+#!/usr/bin/env python3
 #region
 import requests
 from bs4 import BeautifulSoup as bs
 import csv
 import os.path
 from telegram import send_telegram
+from time import sleep
+from random import uniform
 #endregion
 
 
@@ -69,14 +72,19 @@ def verify_news():
 
 
 def run():
-    if os.path.exists('./kwork.csv'):
-        verify_news()
-    else:
-        save(get_data_pages())
+    try:
+        if os.path.exists('./kwork.csv'):
+            verify_news()
+        else:
+            save(get_data_pages())
+    except Exception as ex:
+        print(ex)
 
 
 def main():
-    run()
+    while True:
+        run()
+        sleep(uniform(20, 30))
 
 
 if __name__ == "__main__":
