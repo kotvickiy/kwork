@@ -2,26 +2,35 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import csv
-import os
+import os.path
+from telegram import send_telegram
 #endregion
 
 
 def save(data):
-    with open('kwork.csv', 'a', encoding='utf-8', newline='') as file:
+    with open('./kwork.csv', 'w'):
+        for i in data[:12]:
+            with open('./kwork.csv', 'a', encoding='utf-8', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow((i['name'], i['price'], i['link']))
+
+
+def lst_old_kwork():
+    with open('./kwork.csv', encoding='utf-8') as file:
         order = ['name', 'price', 'link']
-        writer = csv.DictWriter(file, fieldnames=order)
-        writer.writerow(data)
+        reader = csv.DictReader(file, fieldnames=order)
+        return [i for i in reader]
 
 
 def get_html(url):
     response = requests.get(url)
     if response.ok:
         return response.text
-    else:
-        return response.status_code
+    print(response.status_code)
 
 
 def get_data(html):
+    lst_data = []
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
     for block in blocks:
@@ -32,22 +41,43 @@ def get_data(html):
             link = block.find('div', class_='wants-card__header-title').a['href']
 
             data = {'name': name, 'price': price, 'link': link}
-            save(data)
-        
+            lst_data.append(data)
+    
+    return lst_data
+
 
 def get_data_pages():
+    lst_data_pages = []
     for i in range(1, 11):
-        url = f'https://kwork.ru/projects?page={i}'
-        get_data(get_html(url))
-        print(f'page #{i} done!')
+        lst_data_pages.extend(get_data(get_html(f'https://kwork.ru/projects?page={i}')))      
+
+    return lst_data_pages
 
 
-def verify_file_projects():
-    pass
+def verify_news():
+    ref_lst = lst_old_kwork()
+    new_lst = get_data_pages()
+    freshs_lst = []
+    for new in new_lst:
+        if new not in ref_lst:
+            freshs_lst.append(new)
+    if freshs_lst:
+        for i in freshs_lst:
+                    send_telegram(i['name'] + '\n' + i['price'] + '\n' + i['link'])
+        freshs_lst.extend(ref_lst)
+        save(freshs_lst)
+
+
+def run():
+    if os.path.exists('./kwork.csv'):
+        verify_news()
+    else:
+        save(get_data_pages())
 
 
 def main():
-    get_data_pages()
+    run()
+
 
 if __name__ == "__main__":
     main()
