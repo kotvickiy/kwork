@@ -12,7 +12,7 @@ from random import uniform
 
 def save(data):
     with open('./kwork.csv', 'w'):
-        for i in data[:12]:
+        for i in data[:20]:
             with open('./kwork.csv', 'a', encoding='utf-8', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow((i['name'], i['price'], i['link']))
@@ -51,7 +51,7 @@ def get_data(html):
 
 def get_data_pages():
     lst_data_pages = []
-    for i in range(1, 11):
+    for i in range(1, 20):
         lst_data_pages.extend(get_data(get_html(f'https://kwork.ru/projects?page={i}')))      
 
     return lst_data_pages
@@ -84,8 +84,9 @@ def run():
 def main():
     while True:
         run()
-        sleep(uniform(20, 30))
+        sleep(uniform(200, 210))
 
 
 if __name__ == "__main__":
     main()
+
