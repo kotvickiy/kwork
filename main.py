@@ -5,8 +5,6 @@ from bs4 import BeautifulSoup as bs
 import csv
 import os.path
 from telegram import send_telegram
-from time import sleep
-from random import uniform
 #endregion
 
 
@@ -78,7 +76,7 @@ def verify_news():
         save(freshs_lst)
 
 
-def run():
+def main():
     try:
         if os.path.exists('./kwork.csv'):
             verify_news()
@@ -86,13 +84,6 @@ def run():
             save(get_data_pages())
     except Exception as ex:
         print(ex)
-
-
-def main():
-    while True:
-        run()
-        x = uniform(200, 210)
-        sleep(x)
         
 
 if __name__ == "__main__":
