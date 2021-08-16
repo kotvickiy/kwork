@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup as bs
 import csv
 import os.path
 from telegram import send_telegram
+from send_mail import send_mail
 #endregion
 
 
@@ -70,6 +71,7 @@ def verify_news():
         if new not in ref_lst:
             freshs_lst.append(new)
     if freshs_lst:
+        send_mail(freshs_lst, 'smtp.mail.ru', 465, 'test-70@internet.ru', '6sBPYzGrhLRZmVy1xnJi', ['kotvickiy@inbox.ru', 'vladkotvickiy@gmail.com'])
         for i in freshs_lst:
                     send_telegram(i['name'] + '\n' + i['price'] + '\n' + i['link'])
         freshs_lst.extend(ref_lst)
@@ -88,4 +90,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
