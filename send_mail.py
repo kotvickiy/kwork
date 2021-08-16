@@ -2,7 +2,12 @@ import smtplib
 from email.mime.text import MIMEText
 
 
-def send_mail(list_text, mail_server, port, username, password, to_mail):
+def send_mail(list_text,
+              to_mail=['test-70@internet.ru'],
+              mail_server='smtp.mail.ru',
+              port=465,
+              username='test-70@internet.ru',
+              password='6sBPYzGrhLRZmVy1xnJi'):
     msg = ''
     for i in list_text:
         msg += str(i)+ "\n"
@@ -12,5 +17,3 @@ def send_mail(list_text, mail_server, port, username, password, to_mail):
     smtpObj.login(username, password)
     smtpObj.sendmail(username, to_mail, 'Subject: _site_ \n{}'.format(msg))
     smtpObj.quit()
-
-# send_mail(['test1', 'test2'], 'smtp.mail.ru', 465, 'test-70@internet.ru', '6sBPYzGrhLRZmVy1xnJi', ['kotvickiy@inbox.ru', 'vladkotvickiy@gmail.com'])

@@ -71,7 +71,7 @@ def verify_news():
         if new not in ref_lst:
             freshs_lst.append(new)
     if freshs_lst:
-        send_mail(freshs_lst, 'smtp.mail.ru', 465, 'test-70@internet.ru', '6sBPYzGrhLRZmVy1xnJi', ['kotvickiy@inbox.ru', 'vladkotvickiy@gmail.com'])
+        send_mail(freshs_lst)
         for i in freshs_lst:
                     send_telegram(i['name'] + '\n' + i['price'] + '\n' + i['link'])
         freshs_lst.extend(ref_lst)
