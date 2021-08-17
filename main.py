@@ -5,6 +5,9 @@ from bs4 import BeautifulSoup as bs
 import csv
 import os.path
 from send_telegram import send_telegram
+import re
+from time import sleep
+from random import uniform
 #endregion
 
 
@@ -24,6 +27,7 @@ def lst_old_kwork():
 
 
 def get_html(url):
+    sleep(uniform(0.1, 0.5))
     response = requests.get(url)
     if response.ok:
         return response.text
@@ -31,6 +35,7 @@ def get_html(url):
 
 
 def get_data(html):
+    pattern = '[Пп][Аа][Рр][Сс]'
     lst_data = []
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
@@ -43,7 +48,8 @@ def get_data(html):
             description = block.find('div', class_='js-want-block-toggle-full').text.strip()
         except:
             description = 'no description'
-        if 'парс' in name or 'Парс' in name or 'парс' in description or 'Парс' in description:
+        # if 'парс' in name or 'Парс' in name or 'парс' in description or 'Парс' in description:
+        if re.search(pattern, name) or re.search(pattern, description):
             temp_price = block.find('div', class_='wants-card__header-price wants-card__price m-hidden').text.strip().split()
             price = temp_price[-3] + temp_price[-2]
             link = block.find('div', class_='wants-card__header-title').a['href']
@@ -56,7 +62,7 @@ def get_data(html):
 
 def get_data_pages():
     lst_data_pages = []
-    for i in range(1, 20):
+    for i in range(1, 25):
         lst_data_pages.extend(get_data(get_html('https://kwork.ru/projects?page={}'.format(i))))      
 
     return lst_data_pages
