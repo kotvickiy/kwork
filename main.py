@@ -77,7 +77,7 @@ def verify_news():
             freshs_lst.append(new)
     if freshs_lst:
         for i in freshs_lst:
-                    send_telegram(i['name'] + '\n' + i['price'] + '\n' + i['link'])
+            send_telegram(i['name'] + '\n' + i['price'] + '\n' + i['link'])
         freshs_lst.extend(ref_lst)
         save(freshs_lst)
 
