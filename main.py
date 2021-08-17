@@ -57,7 +57,7 @@ def get_data(html):
 def get_data_pages():
     lst_data_pages = []
     for i in range(1, 20):
-        lst_data_pages.extend(get_data(get_html(f'https://kwork.ru/projects?page={i}')))      
+        lst_data_pages.extend(get_data(get_html('https://kwork.ru/projects?page={}'.format(i))))      
 
     return lst_data_pages
 
