@@ -13,7 +13,7 @@ from random import uniform
 
 def save(data):
     with open('./kwork.csv', 'w'):
-        for i in data[:20]:
+        for i in data[:20]:  # сохраняем 20 результатов
             with open('./kwork.csv', 'a', encoding='utf-8', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow((i['name'], i['price'], i['link']))
