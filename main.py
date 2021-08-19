@@ -35,7 +35,7 @@ def get_html(url):
 
 
 def get_data(html):
-    pattern = '[Пп][Аа][Рр][Сс]'
+    pattern = '[Пп][Аа][Рр][Сс]'  # re
     lst_data = []
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
