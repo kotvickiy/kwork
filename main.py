@@ -61,7 +61,7 @@ def get_data(html):
 
 def get_data_pages():
     lst_data_pages = []
-    for i in range(1, 25):
+    for i in range(1, 25):  # проверяем только 25 страниц
         lst_data_pages.extend(get_data(get_html('https://kwork.ru/projects?page={}'.format(i))))      
 
     return lst_data_pages
