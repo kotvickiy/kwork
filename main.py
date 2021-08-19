@@ -35,7 +35,7 @@ def get_html(url):
 
 
 def get_data(html):
-    pattern = '[Пп][Аа][Рр][Сс]'
+    pattern = '[Пп][Аа][Рр][Сс]'  # re
     lst_data = []
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
@@ -48,7 +48,6 @@ def get_data(html):
             description = block.find('div', class_='js-want-block-toggle-full').text.strip()
         except:
             description = 'no description'
-        # if 'парс' in name or 'Парс' in name or 'парс' in description or 'Парс' in description:
         if re.search(pattern, name) or re.search(pattern, description):
             temp_price = block.find('div', class_='wants-card__header-price wants-card__price m-hidden').text.strip().split()
             price = temp_price[-3] + temp_price[-2]
