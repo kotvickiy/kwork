@@ -13,7 +13,7 @@ from random import uniform
 
 def save(data):
     with open('./kwork.csv', 'w'):
-        for i in data[:20]:  # сохраняем 20 результатов
+        for i in data:
             with open('./kwork.csv', 'a', encoding='utf-8', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow((i['name'], i['price'], i['link']))
@@ -35,7 +35,7 @@ def get_html(url):
 
 
 def get_data(html):
-    pattern = '[Пп][Аа][Рр][Сс]'  # re
+    pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]'
     lst_data = []
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
@@ -62,7 +62,7 @@ def get_data(html):
 def get_data_pages():
     lst_data_pages = []
     for i in range(1, 25):  # проверяем только 25 страниц
-        lst_data_pages.extend(get_data(get_html('https://kwork.ru/projects?page={}'.format(i))))      
+        lst_data_pages.extend(get_data(get_html('https://kwork.ru/projects?page={}&a=1'.format(i))))      
 
     return lst_data_pages
 
