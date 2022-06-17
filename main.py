@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-#region
+# python3 -m venv lin_venv3104 && . lin_venv3104/bin/activate
+# pip install PyVirtualDisplay xvfbwrapper selenium requests bs4 lxml fake_useragent
+# sudo apt install chromium-chromedriver xvfb --yes
 import requests
-from bs4 import BeautifulSoup as bs
 import csv
 import os.path
-from send_telegram import send_telegram
+from bs4 import BeautifulSoup as bs
+from pyvirtualdisplay import Display
+from selenium import webdriver
+from telegram_send import send
 import re
 from time import sleep
 from random import uniform
-#endregion
 
 
 def save(data):
@@ -28,15 +31,22 @@ def lst_old_kwork():
 
 def get_html(url):
     sleep(uniform(0.1, 0.5))
-    response = requests.get(url)
-    if response.ok:
-        return response.text
-    print(response.status_code)
+    display = Display(visible=0, size=(1024, 768))
+    display.start()
+    opts = webdriver.ChromeOptions()
+    opts.add_argument('--no-sandbox')
+    opts.add_argument('--disable-setuid-sandbox')
+    browser = webdriver.Chrome(options=opts)
+    browser.implicitly_wait(10)
+    browser.get(url)
+    # browser.save_screenshot("screenshot.png")
+    response = browser.page_source
+    return response
 
 
 def get_data(html):
-    # pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]'
-    pattern = '[Пп][Аа][Рр][Сс]'
+    pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]|[Сс][Оо][Бб][Рр][Аа][Тт][Ьь]|[Чч][Ее][Кк][Ее][Рр]|[Бб][Оо][Тт]'
+    # pattern = '[Пп][Аа][Рр][Сс]'
     lst_data = []
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
@@ -53,7 +63,7 @@ def get_data(html):
             offers = int(block.find('div', class_='ta-right').find('span', class_='dib').text.split()[1].strip())
         except:
             offers = 0
-        if offers < 2 and (re.search(pattern, name) or re.search(pattern, description)):
+        if offers < 3 and (re.search(pattern, name) or re.search(pattern, description)):
             temp_price = block.find('div', class_='wants-card__header-price wants-card__price m-hidden').text.strip().split()
             price = temp_price[-3] + temp_price[-2]
             link = block.find('div', class_='wants-card__header-title').a['href']
@@ -66,8 +76,9 @@ def get_data(html):
 
 def get_data_pages():
     lst_data_pages = []
-    for i in range(1, 25):  # проверяем только 25 страниц
-        lst_data_pages.extend(get_data(get_html('https://kwork.ru/projects?page={}&a=1'.format(i))))      
+    for i in range(1, 6):  # проверяем только 5 страниц
+        link = f'https://kwork.ru/projects?page={i}&a=1'
+        lst_data_pages.extend(get_data(get_html(link)))
 
     return lst_data_pages
 
@@ -80,8 +91,9 @@ def verify_news():
         if new not in ref_lst:
             freshs_lst.append(new)
     if freshs_lst:
+        # print(freshs_lst)
         for i in freshs_lst:
-            send_telegram(i['name'] + '\n' + i['price'] + '\n' + i['link'])
+            send(str(i['name'] + '\n' + i['price'] + '\n' + i['link']))
         freshs_lst.extend(ref_lst)
         save(freshs_lst)
 
