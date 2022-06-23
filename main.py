@@ -31,22 +31,26 @@ def lst_old_kwork():
 
 def get_html(url):
     sleep(uniform(0.1, 0.5))
-    display = Display(visible=0, size=(1024, 768))
+    display = Display(visible=0, size=(1024, 3800))
     display.start()
     opts = webdriver.ChromeOptions()
     opts.add_argument('--no-sandbox')
     opts.add_argument('--disable-setuid-sandbox')
+    opts.add_argument("--disable-blink-features=AutomationControlled")
     browser = webdriver.Chrome(options=opts)
     browser.implicitly_wait(10)
     browser.get(url)
-    # browser.save_screenshot("screenshot.png")
+    browser.save_screenshot("screenshot.png")
     response = browser.page_source
+    browser.close()
+    browser.quit()
+    display.stop()
     return response
 
 
 def get_data(html):
-    pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]|[Сс][Оо][Бб][Рр][Аа][Тт][Ьь]|[Чч][Ее][Кк][Ее][Рр]|[Бб][Оо][Тт]'
-    # pattern = '[Пп][Аа][Рр][Сс]'
+    # pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]|[Сс][Оо][Бб][Рр][Аа][Тт][Ьь]|[Чч][Ее][Кк][Ее][Рр]|[Бб][Оо][Тт]'
+    pattern = '[Пп][Аа][Рр][Сс]'
     lst_data = []
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
@@ -69,8 +73,7 @@ def get_data(html):
             link = block.find('div', class_='wants-card__header-title').a['href']
 
             data = {'name': name, 'price': price, 'link': link}
-            lst_data.append(data)
-    
+            lst_data.append(data)   
     return lst_data
 
 
@@ -79,7 +82,6 @@ def get_data_pages():
     for i in range(1, 6):  # проверяем только 5 страниц
         link = f'https://kwork.ru/projects?page={i}&a=1'
         lst_data_pages.extend(get_data(get_html(link)))
-
     return lst_data_pages
 
 
