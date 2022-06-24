@@ -63,7 +63,6 @@ def get_data(html):
         except:
             description = 'no description'
         try:
-            # offers = int(block.find('div', class_='ta-right').find('span', class_='dib').text.split()[1].strip())
             offers = int(block.find('div', class_='query-item__info-wrap').find_all('span')[1].text.split()[-1].strip())
         except:
             offers = 0
