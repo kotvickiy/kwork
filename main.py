@@ -2,7 +2,6 @@
 # python3 -m venv lin_venv3104 && . lin_venv3104/bin/activate
 # pip install PyVirtualDisplay xvfbwrapper selenium requests bs4 lxml fake_useragent
 # sudo apt install chromium-chromedriver xvfb --yes
-import requests
 import csv
 import os.path
 from bs4 import BeautifulSoup as bs
@@ -31,7 +30,7 @@ def lst_old_kwork():
 
 def get_html(url):
     sleep(uniform(0.1, 0.5))
-    display = Display(visible=0, size=(1024, 3800))
+    display = Display(visible=0, size=(1024, 4250))
     display.start()
     opts = webdriver.ChromeOptions()
     opts.add_argument('--no-sandbox')
@@ -64,7 +63,8 @@ def get_data(html):
         except:
             description = 'no description'
         try:
-            offers = int(block.find('div', class_='ta-right').find('span', class_='dib').text.split()[1].strip())
+            # offers = int(block.find('div', class_='ta-right').find('span', class_='dib').text.split()[1].strip())
+            offers = int(block.find('div', class_='query-item__info-wrap').find_all('span')[1].text.split()[-1].strip())
         except:
             offers = 0
         if offers < 3 and (re.search(pattern, name) or re.search(pattern, description)):
