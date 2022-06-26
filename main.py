@@ -2,6 +2,10 @@
 # python3 -m venv lin_venv3104 && . lin_venv3104/bin/activate
 # pip install PyVirtualDisplay xvfbwrapper selenium requests bs4 lxml fake_useragent
 # sudo apt install chromium-chromedriver xvfb --yes
+# Xvfb :99 -ac & export DISPLAY=:99 # включить иксы в фоне
+# kill $(pgrep -f .vscode-server/bin/) # убить иксы vscode
+
+
 import csv
 import os.path
 from bs4 import BeautifulSoup as bs
