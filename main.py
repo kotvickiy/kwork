@@ -34,7 +34,7 @@ def lst_old_kwork():
 
 def get_html(url):
     sleep(uniform(0.1, 0.5))
-    display = Display(visible=0, size=(1024, 4250))
+    display = Display(visible=0, size=(800, 1500))
     display.start()
     opts = webdriver.ChromeOptions()
     opts.add_argument('--no-sandbox')
@@ -43,7 +43,8 @@ def get_html(url):
     browser = webdriver.Chrome(options=opts)
     browser.implicitly_wait(10)
     browser.get(url)
-    browser.save_screenshot("screenshot.png")
+    browser.execute_script("window.scrollTo(0, 5000)")
+    browser.save_screenshot("screen.png")
     response = browser.page_source
     browser.close()
     browser.quit()
