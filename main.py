@@ -5,7 +5,7 @@
 # kill $(pgrep -f .vscode-server/bin/) # убить иксы vscode
 # ssh-keygen
 # ssh-copy-id vladium@myselfserver
-# @reboot /usr/bin/sleep 15; ssh vladium@192.168.1.99 Xvfb &
+# @reboot /usr/bin/sleep 15; ssh vladium@myselfserver Xvfb &
 # */5 * * * * cd /home/vladium/kwork/ && /home/vladium/kwork/lin_venv3104/bin/python3 /home/vladium/kwork/main.py >> out.log 2>&1
 
 
