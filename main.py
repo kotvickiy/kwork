@@ -43,6 +43,7 @@ def get_html(url):
     options.add_argument("–no-sandbox")
     driver = webdriver.Chrome(service=service, options=options)
     driver.get(url)
+    driver.set_window_size(800, 1500)
     driver.execute_script("window.scrollTo(0, 5000)")
     driver.save_screenshot("img.png")
     response = driver.page_source
