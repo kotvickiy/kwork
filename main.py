@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
+# sudo apt install python3.10-venv chromium-chromedriver feh xvfb --yes
 # python3 -m venv lin_venv3104 && . lin_venv3104/bin/activate
-# pip install PyVirtualDisplay xvfbwrapper selenium requests bs4 lxml fake_useragent
-# sudo apt install chromium-chromedriver xvfb --yes
-# Xvfb :99 -ac & export DISPLAY=:99 # включить иксы в фоне
+# pip install selenium webdriver_manager requests bs4 lxml fake_useragent
 # kill $(pgrep -f .vscode-server/bin/) # убить иксы vscode
+# ssh-keygen
+# ssh-copy-id vladium@myselfserver
+# @reboot /usr/bin/sleep 15; ssh vladium@192.168.1.99 Xvfb &
+# */5 * * * * cd /home/vladium/kwork/ && /home/vladium/kwork/lin_venv3104/bin/python3 /home/vladium/kwork/main.py >> out.log 2>&1
 
 
 import csv
@@ -34,21 +37,17 @@ def lst_old_kwork():
 
 def get_html(url):
     sleep(uniform(0.1, 0.5))
-    display = Display(visible=0, size=(800, 1500))
-    display.start()
-    opts = webdriver.ChromeOptions()
-    opts.add_argument('--no-sandbox')
-    opts.add_argument('--disable-setuid-sandbox')
-    opts.add_argument("--disable-blink-features=AutomationControlled")
-    browser = webdriver.Chrome(options=opts)
-    browser.implicitly_wait(10)
-    browser.get(url)
-    browser.execute_script("window.scrollTo(0, 5000)")
-    browser.save_screenshot("screen.png")
-    response = browser.page_source
-    browser.close()
-    browser.quit()
-    display.stop()
+    service = Service("/usr/bin/chromedriver")
+    options = webdriver.ChromeOptions()
+    options.headless = True
+    options.add_argument("–no-sandbox")
+    driver = webdriver.Chrome(service=service, options=options)
+    driver.get(url)
+    driver.execute_script("window.scrollTo(0, 5000)")
+    driver.save_screenshot("img.png")
+    response = driver.page_source
+    driver.close()
+    driver.quit()
     return response
 
 
