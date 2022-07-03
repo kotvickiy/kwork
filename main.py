@@ -14,6 +14,8 @@ import os.path
 from bs4 import BeautifulSoup as bs
 from pyvirtualdisplay import Display
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from telegram_send import send
 import re
 from time import sleep
