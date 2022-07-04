@@ -9,14 +9,12 @@
 # */5 * * * * cd /home/vladium/kwork/ && /home/vladium/kwork/lin_venv3104/bin/python3 /home/vladium/kwork/main.py >> out.log 2>&1
 
 
-import csv
-import os.path
+import csv, os, os.path, glob, time, datetime, re
 from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from telegram_send import send
-import re
 from time import sleep
 from random import uniform
 
@@ -46,7 +44,9 @@ def get_html(url):
     driver.get(url)
     driver.set_window_size(800, 1500)
     driver.execute_script("window.scrollTo(0, 5000)")
-    driver.save_screenshot("img.png")
+    if not os.path.exists("img/"):
+        os.makedirs("img/")
+    driver.save_screenshot(f"img/{datetime.datetime.now()}.png")
     response = driver.page_source
     driver.close()
     driver.quit()
@@ -107,6 +107,10 @@ def verify_news():
 
 def main():
     try:
+        if glob.glob("img/*.png"):
+            print('glob')
+            for f in glob.glob("img/*.png"):
+                os.remove(f)
         if os.path.exists('./kwork.csv'):
             verify_news()
         else:
