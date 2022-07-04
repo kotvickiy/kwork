@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # sudo apt install python3.10-venv chromium-chromedriver feh xvfb --yes
 # python3 -m venv lin_venv3104 && . lin_venv3104/bin/activate
-# pip install selenium webdriver_manager requests bs4 lxml fake_useragent
+# pip install selenium webdriver_manager requests bs4 lxml
 # kill $(pgrep -f .vscode-server/bin/) # убить иксы vscode
 # ssh-keygen
 # ssh-copy-id vladium@myselfserver
@@ -42,11 +42,10 @@ def get_html(url):
     options.add_argument("–no-sandbox")
     driver = webdriver.Chrome(service=service, options=options)
     driver.get(url)
-    driver.set_window_size(800, 1500)
-    driver.execute_script("window.scrollTo(0, 5000)")
+    driver.set_window_size(800, 4500)
     if not os.path.exists("img/"):
         os.makedirs("img/")
-    driver.save_screenshot(f"img/{datetime.datetime.now()}.png")
+    driver.save_screenshot(f"img/{datetime.datetime.now().replace(microsecond=0)}.png")
     response = driver.page_source
     driver.close()
     driver.quit()
@@ -54,8 +53,8 @@ def get_html(url):
 
 
 def get_data(html):
-    # pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]|[Сс][Оо][Бб][Рр][Аа][Тт][Ьь]|[Чч][Ее][Кк][Ее][Рр]|[Бб][Оо][Тт]'
-    pattern = '[Пп][Аа][Рр][Сс]'
+    pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]|[Сс][Оо][Бб][Рр][Аа][Тт][Ьь]|[Чч][Ее][Кк][Ее][Рр]|[Бб][Оо][Тт]'
+    # pattern = '[Пп][Аа][Рр][Сс]'
     lst_data = []
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
@@ -108,7 +107,6 @@ def verify_news():
 def main():
     try:
         if glob.glob("img/*.png"):
-            print('glob')
             for f in glob.glob("img/*.png"):
                 os.remove(f)
         if os.path.exists('./kwork.csv'):
