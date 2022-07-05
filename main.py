@@ -53,8 +53,8 @@ def get_html(url):
 
 
 def get_data(html):
-    # pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]|[Сс][Оо][Бб][Рр][Аа][Тт][Ьь]|[Чч][Ее][Кк][Ее][Рр]|[Бб][Оо][Тт]'
-    pattern = '[Пп][Аа][Рр][Сс]'
+    pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]|[Сс][Оо][Бб][Рр][Аа][Тт][Ьь]|[Чч][Ее][Кк][Ее][Рр]|[Бб][Оо][Тт]'
+    # pattern = '[Пп][Аа][Рр][Сс]'
     lst_data = []
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
@@ -97,10 +97,9 @@ def verify_news():
         if new not in ref_lst:
             freshs_lst.append(new)
     if freshs_lst:
-        # print(freshs_lst)
         for i in freshs_lst:
             send(str(i['name'] + '\n' + i['price'] + '\n' + i['link']))
-        # freshs_lst.extend(ref_lst)
+        freshs_lst.extend(ref_lst[:10])
         save(freshs_lst)
 
 
