@@ -45,7 +45,7 @@ def get_html(url):
     driver.set_window_size(800, 4500)
     if not os.path.exists("img/"):
         os.makedirs("img/")
-    driver.save_screenshot(f'img/{datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")}.png')
+    driver.save_screenshot(f'img/{datetime.datetime.now().strftime("%H:%M:%S %d-%m-%y")}.png')
     response = driver.page_source
     driver.close()
     driver.quit()
@@ -83,7 +83,7 @@ def get_data(html):
 
 def get_data_pages():
     lst_data_pages = []
-    for i in range(1, 6):  # проверяем только 5 страниц
+    for i in range(1, 11):  # проверяем только 10 страниц
         link = f'https://kwork.ru/projects?page={i}&a=1'
         lst_data_pages.extend(get_data(get_html(link)))
     return lst_data_pages
@@ -100,7 +100,7 @@ def verify_news():
         # print(freshs_lst)
         for i in freshs_lst:
             send(str(i['name'] + '\n' + i['price'] + '\n' + i['link']))
-        freshs_lst.extend(ref_lst)
+        # freshs_lst.extend(ref_lst)
         save(freshs_lst)
 
 
