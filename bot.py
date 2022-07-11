@@ -15,6 +15,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
 myselfserver = s.getsockname()[0]
 
+
 try:
     cron  = str(list(CronTab(user="vladium"))[-1])
 except:
@@ -24,54 +25,48 @@ except:
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
-b0 = KeyboardButton("verify")
-b1 = KeyboardButton("run")
-b2 = KeyboardButton("kcu")
-b3 = KeyboardButton("kcd")
 
-kb_client0 = ReplyKeyboardMarkup(resize_keyboard=True)
-kb_client0.row(b1, b0)
+b0 = KeyboardButton("Проверить")
+b1 = KeyboardButton("Запустить")
+b2 = KeyboardButton("Включить планировщик")
+b3 = KeyboardButton("Выключить планировщик")
 
-kb_client1 = ReplyKeyboardMarkup(resize_keyboard=True)
-kb_client1.row(b1, b2)
 
-kb_client2 = ReplyKeyboardMarkup(resize_keyboard=True)
-kb_client2.row(b1, b3)
+def kb(button_one, button_two):
+    kb_client = ReplyKeyboardMarkup(resize_keyboard=True)
+    return kb_client.row(button_one, button_two)
+
 
 @dp.message_handler(commands=['start'])
 async def commands_start(message : types.Message):
-    await bot.send_message(message.from_user.id, "start", reply_markup=kb_client0)
+    await bot.send_message(message.from_user.id, "/start", reply_markup=kb(b1, b0))
     await message.delete()
-
-
-async def on_startup(_):
-    print(f"Бот вышел в онлайн {datetime.now().strftime('%H:%M:%S %d-%m-%y')}")
 
 
 @dp.message_handler()
 async def echo_send(message : types.Message):
-    if message.text.lower() == "run":
-        await bot.send_message(message.from_user.id, "run..")
+    if message.text == "Запустить":
+        await bot.send_message(message.from_user.id, "Запущен")
         await message.delete()
         run()
-        await bot.send_message(message.from_user.id, "runend")
-    elif message.text.lower() == "verify":
+        await bot.send_message(message.from_user.id, "Завершен")
+    elif message.text == "Проверить":
         await message.delete()
         cron  = str(list(CronTab(user="vladium"))[-1])
         if cron[0] == "#":
-            await bot.send_message(message.from_user.id, "Выключен", reply_markup=kb_client1)
+            await bot.send_message(message.from_user.id, "Выключен", reply_markup=kb(b1, b2))
         else:
-            await bot.send_message(message.from_user.id, "Включен", reply_markup=kb_client2)
-    elif message.text.lower() == "kcu":
+            await bot.send_message(message.from_user.id, "Включен", reply_markup=kb(b1, b3))
+    elif message.text == "Включить планировщик":
         cron  = str(list(CronTab(user="vladium"))[-1])
-        await bot.send_message(message.from_user.id, "kcu", reply_markup=kb_client2)
+        await bot.send_message(message.from_user.id, "↑↑↑", reply_markup=kb(b1, b3))
         await message.delete()
         os.system(f'crontab -l > foocron; echo "@reboot /usr/bin/sleep 15; ssh vladium@{myselfserver} Xvfb &\n@reboot /usr/bin/sleep 20; cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/bot.py >> out.log 2>&1\n*/5 * * * * cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/run.py >> out.log 2>&1" > foocron; crontab foocron; rm foocron')
         cron  = str(list(CronTab(user="vladium"))[-1])
         await bot.send_message(message.from_user.id, "Включен")
-    elif message.text.lower() == "kcd":
+    elif message.text == "Выключить планировщик":
         cron  = str(list(CronTab(user="vladium"))[-1])
-        await bot.send_message(message.from_user.id, "kcd", reply_markup=kb_client1)
+        await bot.send_message(message.from_user.id, "↓↓↓", reply_markup=kb(b1, b2))
         await message.delete()
         os.system(f'crontab -l > foocron; echo "@reboot /usr/bin/sleep 15; ssh vladium@{myselfserver} Xvfb &\n@reboot /usr/bin/sleep 20; cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/bot.py >> out.log 2>&1\n# */5 * * * * cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/run.py >> out.log 2>&1" > foocron; crontab foocron; rm foocron')
         cron  = str(list(CronTab(user="vladium"))[-1])
