@@ -10,11 +10,16 @@ from run import run
 import os
 import socket
 
+
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
 myselfserver = s.getsockname()[0]
 
-cron  = str(list(CronTab(user="vladium"))[-1])
+try:
+    cron  = str(list(CronTab(user="vladium"))[-1])
+except:
+    os.system(f'crontab -l > foocron; echo "# @reboot /usr/bin/sleep 15; ssh vladium@{myselfserver} Xvfb &\n# @reboot /usr/bin/sleep 20; cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/bot.py >> out.log 2>&1\n# */5 * * * * cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/run.py >> out.log 2>&1" > foocron; crontab foocron; rm foocron')
+
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
