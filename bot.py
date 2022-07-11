@@ -4,7 +4,7 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from datetime import datetime
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
-from config import TOKEN
+from config import TOKEN, CHAT_ID
 from crontab import CronTab
 from run import run
 import os
@@ -35,6 +35,17 @@ b3 = KeyboardButton("Выключить планировщик")
 def kb(button_one, button_two):
     kb_client = ReplyKeyboardMarkup(resize_keyboard=True)
     return kb_client.row(button_one, button_two)
+
+
+acl = (CHAT_ID, )
+
+admin_only = lambda message: message.from_user.id not in acl
+
+
+@dp.message_handler(admin_only, content_types=['any'])
+async def handle_unwanted_users(message: types.Message):
+    await bot.delete_message(message.chat.id, message.message_id)
+    return
 
 
 @dp.message_handler(commands=['start'])
