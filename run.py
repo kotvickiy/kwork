@@ -1,22 +1,24 @@
 #!/usr/bin/env python3
 # sudo apt install python3.10-venv chromium-chromedriver feh xvfb --yes
 # python3 -m venv lin_venv3104 && . lin_venv3104/bin/activate
-# pip install selenium webdriver_manager requests bs4 lxml
+# pip install selenium webdriver_manager requests bs4 lxml aiogram python-crontab
 # kill $(pgrep -f .vscode-server/bin/) # убить иксы vscode
 # ssh-keygen
 # ssh-copy-id vladium@myselfserver
+# crontab -e
 # @reboot /usr/bin/sleep 15; ssh vladium@myselfserver Xvfb &
-# */5 * * * * cd /home/vladium/kwork/ && /home/vladium/kwork/lin_venv3104/bin/python3 /home/vladium/kwork/main.py >> out.log 2>&1
-
+# @reboot /usr/bin/sleep 20; cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/bot.py >> out.log 2>&1
+# */5 * * * * cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/kwork/code/main.py >> out.log 2>&1
 
 import csv, os, os.path, glob, time, datetime, re
 from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from telegram_send import send
 from time import sleep
 from random import uniform
+from config import TOKEN, CHAT_ID
+import requests
 
 
 def save(data):
@@ -53,8 +55,8 @@ def get_html(url):
 
 
 def get_data(html):
-    # pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]|[Сс][Оо][Бб][Рр][Аа][Тт][Ьь]|[Чч][Ее][Кк][Ее][Рр]|[Бб][Оо][Тт]'
-    pattern = '[Пп][Аа][Рр][Сс]'
+    pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]|[Сс][Оо][Бб][Рр][Аа][Тт][Ьь]|[Чч][Ее][Кк][Ее][Рр]|[Бб][Оо][Тт]'
+    # pattern = '[Пп][Аа][Рр][Сс]|[^A-z][Bb][Oo][Tt].?\s?|[^А-ё][Бб][Оо][Тт].?\s?'
     lst_data = []
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
@@ -83,7 +85,7 @@ def get_data(html):
 
 def get_data_pages():
     lst_data_pages = []
-    for i in range(1, 11):  # проверяем только 10 страниц
+    for i in range(1, 6):  # проверяем только 5 страниц
         link = f'https://kwork.ru/projects?page={i}&a=1'
         lst_data_pages.extend(get_data(get_html(link)))
     return lst_data_pages
@@ -98,12 +100,13 @@ def verify_news():
             freshs_lst.append(new)
     if freshs_lst:
         for i in freshs_lst:
-            send(str(i['name'] + '\n' + i['price'] + '\n' + i['link']))
+            msg = str(i['name'] + '\n' + i['price'] + '\n' + i['link'])
+            requests.get(f'https://api.telegram.org/bot{TOKEN}/sendMessage', params=dict(chat_id=CHAT_ID,text=msg))
         freshs_lst.extend(ref_lst[:5])
         save(freshs_lst)
 
 
-def main():
+def run():
     try:
         if glob.glob("img/*.png"):
             for f in glob.glob("img/*.png"):
@@ -117,4 +120,4 @@ def main():
         
 
 if __name__ == "__main__":
-    main()
+    run()
