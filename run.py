@@ -10,6 +10,7 @@
 # @reboot /usr/bin/sleep 20; cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/bot.py >> out.log 2>&1
 # */5 * * * * cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/kwork/code/main.py >> out.log 2>&1
 
+
 import csv, os, os.path, glob, time, datetime, re
 from bs4 import BeautifulSoup as bs
 from selenium import webdriver
@@ -55,8 +56,8 @@ def get_html(url):
 
 
 def get_data(html):
-    pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]|[Сс][Оо][Бб][Рр][Аа][Тт][Ьь]|[Чч][Ее][Кк][Ее][Рр]|[Бб][Оо][Тт]'
-    # pattern = '[Пп][Аа][Рр][Сс]|[^A-z][Bb][Oo][Tt].?\s?|[^А-ё][Бб][Оо][Тт].?\s?'
+    # pattern = '[Пп][Аа][Рр][Сс]|[Сс][Кк][Рр][Ии][Пп][Тт]|[Сс][Оо][Бб][Рр][Аа][Тт][Ьь]|[Чч][Ее][Кк][Ее][Рр]|[Бб][Оо][Тт]'
+    pattern = '[Пп][Аа][Рр][Сс]|[^A-z][Bb][Oo][Tt].?\s?|[^А-ё][Бб][Оо][Тт].?\s?'
     lst_data = []
     soup = bs(html, 'lxml')
     blocks = soup.find_all('div', class_='card')
@@ -73,7 +74,7 @@ def get_data(html):
             offers = int(block.find('div', class_='query-item__info-wrap').find_all('span')[1].text.split()[-1].strip())
         except:
             offers = 0
-        if offers < 3 and (re.search(pattern, name) or re.search(pattern, description)):
+        if offers < 4 and (re.search(pattern, name) or re.search(pattern, description)):
             temp_price = block.find('div', class_='wants-card__header-price wants-card__price m-hidden').text.strip().split()
             price = temp_price[-3] + temp_price[-2]
             link = block.find('div', class_='wants-card__header-title').a['href']
@@ -85,7 +86,7 @@ def get_data(html):
 
 def get_data_pages():
     lst_data_pages = []
-    for i in range(1, 6):  # проверяем только 5 страниц
+    for i in range(1, 8):  # проверяем только 7 страниц
         link = f'https://kwork.ru/projects?page={i}&a=1'
         lst_data_pages.extend(get_data(get_html(link)))
     return lst_data_pages
