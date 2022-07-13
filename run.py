@@ -86,7 +86,7 @@ def get_data(html):
 
 def get_data_pages():
     lst_data_pages = []
-    for i in range(1, 8):  # проверяем только 7 страниц
+    for i in range(1, 4):  # проверяем только 7 страниц
         link = f'https://kwork.ru/projects?page={i}&a=1'
         lst_data_pages.extend(get_data(get_html(link)))
     return lst_data_pages
