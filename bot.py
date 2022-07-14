@@ -25,10 +25,7 @@ def cron():
 
 
 def installation_crontab(grid_one="# ", grid_two="# ", grid_three="# "):
-    os.system(f'crontab -l > foocron; echo "{grid_one}@reboot /usr/bin/sleep 15; ssh vladium@{myselfserver} Xvfb &\n{grid_two}@reboot /usr/bin/sleep 20; \
-    cd /home/vladium/code/kwork/ \
-    && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/bot.py >> out.log 2>&1\n{grid_three}*/5 * * * * cd /home/vladium/code/kwork/ && \
-    /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/run.py >> out.log 2>&1" > foocron; crontab foocron; rm foocron')
+    os.system(f'crontab -l > foocron; echo "{grid_one}@reboot /usr/bin/sleep 15; ssh vladium@{myselfserver} Xvfb &\n{grid_two}@reboot /usr/bin/sleep 20; cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/bot.py >> out.log 2>&1\n{grid_three}*/5 * * * * cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/main.py >> out.log 2>&1" > foocron; crontab foocron; rm foocron')
 
 
 try:

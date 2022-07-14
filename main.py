@@ -3,6 +3,7 @@
 # python3 -m venv lin_venv3104 && . lin_venv3104/bin/activate
 # pip install selenium webdriver_manager requests bs4 lxml aiogram python-crontab
 # kill $(pgrep -f .vscode-server/bin/) # убить иксы vscode
+# kill $(pgrep -f bot.py) # убить бота
 # ssh-keygen
 # ssh-copy-id vladium@myselfserver
 # crontab -e
