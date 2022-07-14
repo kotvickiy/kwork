@@ -2,8 +2,7 @@
 # sudo apt install python3.10-venv chromium-chromedriver feh xvfb --yes
 # python3 -m venv lin_venv3104 && . lin_venv3104/bin/activate
 # pip install selenium webdriver_manager requests bs4 lxml aiogram python-crontab
-# kill $(pgrep -f .vscode-server/bin/) # убить vscode
-# kill $(pgrep -f bot.py) # убить бота
+# kill $(pgrep -f .vscode-server/bin/) # убить иксы vscode
 # ssh-keygen
 # ssh-copy-id vladium@myselfserver
 # crontab -e
@@ -87,7 +86,7 @@ def get_data(html):
 
 def get_data_pages():
     lst_data_pages = []
-    for i in range(1, 4):  # проверяем только 7 страниц
+    for i in range(1, 6):  # проверяем только 7 страниц
         link = f'https://kwork.ru/projects?page={i}&a=1'
         lst_data_pages.extend(get_data(get_html(link)))
     return lst_data_pages
@@ -108,7 +107,7 @@ def verify_news():
         save(freshs_lst)
 
 
-def run():
+def main():
     try:
         if glob.glob("img/*.png"):
             for f in glob.glob("img/*.png"):
@@ -122,4 +121,4 @@ def run():
         
 
 if __name__ == "__main__":
-    run()
+    main()

@@ -6,7 +6,7 @@ from datetime import datetime
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
 from config import TOKEN, CHAT_ID
 from crontab import CronTab
-from run import run
+from main import main
 import os
 import socket
 
@@ -35,28 +35,19 @@ try:
     cron()
 except:
     installation_crontab()
-    # os.system(f'crontab -l > foocron; echo "# @reboot /usr/bin/sleep 15; ssh vladium@{myselfserver} Xvfb &\n# @reboot /usr/bin/sleep 20; cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/bot.py >> out.log 2>&1\n# */5 * * * * cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/code/kwork/run.py >> out.log 2>&1" > foocron; crontab foocron; rm foocron')
 
 
-b0 = KeyboardButton("Главное меню")
+def kb():
+    kb_client = ReplyKeyboardMarkup(resize_keyboard=True)
+    return kb_client
+
+
 b1 = KeyboardButton("Запустить")
 b2 = KeyboardButton("Включить планировщик")
 b3 = KeyboardButton("Выключить планировщик")
 b4 = KeyboardButton("Проверить")
 b5 = KeyboardButton("Перезагрузить")
-b6 = KeyboardButton("Secure")
-
-
-def kb(button_one, button_two, button_three):
-    kb_client = ReplyKeyboardMarkup(resize_keyboard=True)
-    return kb_client.row(button_one, button_two).add(button_three)
-
-
-async def verify(message):
-    if cron()[0] == "#":
-        await bot.send_message(message.from_user.id, "Выключен", reply_markup=kb(b1, b2, b0))
-    else:
-        await bot.send_message(message.from_user.id, "Включен", reply_markup=kb(b1, b3, b0))
+b6 = KeyboardButton("Меню")
 
 
 acl = (CHAT_ID, )
@@ -71,16 +62,23 @@ async def handle_unwanted_users(message: types.Message):
 
 @dp.message_handler(commands=['start'])
 async def commands_start(message : types.Message):
-    await bot.send_message(message.from_user.id, "/start", reply_markup=kb(b1, b4, b6))
+    await bot.send_message(message.from_user.id, "/start", reply_markup=kb().row(b1, b4))
     await message.delete()
 
 
+async def verify(message):
+    if cron()[0] == "#":
+        await bot.send_message(message.from_user.id, "Выключен", reply_markup=kb().row(b2, b6))
+    else:
+        await bot.send_message(message.from_user.id, "Включен", reply_markup=kb().row(b3, b6))
+
+
 @dp.message_handler()
-async def echo_send(message : types.Message):
+async def send(message : types.Message):
     if message.text == "Запустить":
         await bot.send_message(message.from_user.id, "Запущен", reply_markup=ReplyKeyboardRemove())
         await message.delete()
-        run()
+        main()
         await bot.send_message(message.from_user.id, "Завершен")
         await verify(message)
     elif message.text == "Проверить":
@@ -93,20 +91,20 @@ async def echo_send(message : types.Message):
         os.system('echo %s|sudo -S %s' % (sudoPassword, command))
     elif message.text == "Secure":
         await message.delete()
-        await bot.send_message(message.from_user.id, "Secure", reply_markup=kb(b1, b5, b0))
-    elif message.text == "Главное меню":
+        await bot.send_message(message.from_user.id, "Secure", reply_markup=kb().row(b1, b5, b6))
+    elif message.text == "Меню":
         await message.delete()
-        await bot.send_message(message.from_user.id, "Главное меню", reply_markup=kb(b1, b4, b6))
+        await bot.send_message(message.from_user.id, "Меню", reply_markup=kb().row(b1, b4).row(b5))
     elif message.text == "Включить планировщик":
         cron()
-        await bot.send_message(message.from_user.id, "↑↑↑", reply_markup=kb(b1, b3, b0))
+        await bot.send_message(message.from_user.id, "↑↑↑", reply_markup=kb().row(b1, b3, b6))
         await message.delete()
         installation_crontab("", "", "")
         cron()
         await bot.send_message(message.from_user.id, "Включен")
     elif message.text == "Выключить планировщик":
         cron()
-        await bot.send_message(message.from_user.id, "↓↓↓", reply_markup=kb(b1, b2, b0))
+        await bot.send_message(message.from_user.id, "↓↓↓", reply_markup=kb().row(b1, b2, b6))
         await message.delete()
         installation_crontab("", "")
         cron()
