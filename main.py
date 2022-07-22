@@ -105,7 +105,7 @@ def verify_news():
             msg = str(i['name'] + '\n' + i['price'] + '\n' + i['link'])
             requests.get(f'https://api.telegram.org/bot{TOKEN}/sendMessage', params=dict(chat_id=CHAT_ID,text=msg))
         freshs_lst.extend(ref_lst[:5])
-    save(freshs_lst)
+        save(freshs_lst)
 
 
 def main():
