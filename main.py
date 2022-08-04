@@ -12,15 +12,17 @@
 # */5 * * * * cd /home/vladium/code/kwork/ && /home/vladium/code/kwork/lin_venv3104/bin/python3 /home/vladium/kwork/code/main.py >> out.log 2>&1
 
 
-import csv, os, os.path, glob, time, datetime, re
+import csv, os, os.path, glob, time, datetime, re, requests
+
 from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
 from random import uniform
+
 from config import TOKEN, CHAT_ID
-import requests
+from headers import headers, cookies
 
 
 def save(data):
@@ -39,21 +41,25 @@ def lst_old_kwork():
 
 
 def get_html(url):
-    sleep(uniform(0.1, 0.5))
-    service = Service("/usr/bin/chromedriver")
-    options = webdriver.ChromeOptions()
-    options.headless = True
-    options.add_argument("–no-sandbox")
-    driver = webdriver.Chrome(service=service, options=options)
-    driver.get(url)
-    driver.set_window_size(800, 4500)
-    if not os.path.exists("img/"):
-        os.makedirs("img/")
-    driver.save_screenshot(f'img/{datetime.datetime.now().strftime("%H:%M:%S %d-%m-%y")}.png')
-    response = driver.page_source
-    driver.close()
-    driver.quit()
-    return response
+    response = requests.get(url, headers=headers, cookies=cookies)
+    if response.ok:
+        return response.text
+    else:
+        sleep(uniform(0.1, 0.5))
+        service = Service("/usr/bin/chromedriver")
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        options.add_argument("–no-sandbox")
+        driver = webdriver.Chrome(service=service, options=options)
+        driver.get(url)
+        driver.set_window_size(800, 4500)
+        if not os.path.exists("img/"):
+            os.makedirs("img/")
+        driver.save_screenshot(f'img/{datetime.datetime.now().strftime("%H:%M:%S %d-%m-%y")}.png')
+        response = driver.page_source
+        driver.close()
+        driver.quit()
+        return response
 
 
 def get_data(html):
@@ -104,7 +110,7 @@ def verify_news():
         for i in freshs_lst:
             msg = str(i['name'] + '\n' + i['price'] + '\n' + i['link'])
             requests.get(f'https://api.telegram.org/bot{TOKEN}/sendMessage', params=dict(chat_id=CHAT_ID,text=msg))
-        freshs_lst.extend(ref_lst[:5])
+        freshs_lst.extend(ref_lst[:100])
         save(freshs_lst)
 
 
