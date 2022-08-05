@@ -17,7 +17,7 @@ import csv, os, os.path, glob, time, datetime, re, requests
 from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+from datetime import datetime
 from time import sleep
 from random import uniform
 
@@ -93,7 +93,7 @@ def get_data(html):
 
 def get_data_pages():
     lst_data_pages = []
-    for i in range(1, 6):  # проверяем только 7 страниц
+    for i in range(1, 6):  # проверяем только 5 страниц
         link = f'https://kwork.ru/projects?page={i}&a=1'
         lst_data_pages.extend(get_data(get_html(link)))
     return lst_data_pages
@@ -123,8 +123,9 @@ def main():
             verify_news()
         else:
             save(get_data_pages())
+        print("[ + ]", datetime.now().strftime('%d-%m-%Y %H:%M:%S'))
     except Exception as ex:
-        print(ex)
+        print(f"[ - ] {datetime.now().strftime('%d-%m-%Y %H:%M:%S')} {ex}")
         
 
 if __name__ == "__main__":
