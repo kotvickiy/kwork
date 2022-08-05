@@ -45,6 +45,7 @@ def get_html(url):
     if response.ok:
         return response.text
     else:
+        print("⮭", "SELENIUM", datetime.now().strftime('%d-%m-%Y %H:%M:%S'))
         sleep(uniform(0.1, 0.5))
         service = Service("/usr/bin/chromedriver")
         options = webdriver.ChromeOptions()
