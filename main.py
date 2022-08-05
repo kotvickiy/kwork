@@ -55,7 +55,7 @@ def get_html(url):
         driver.set_window_size(800, 4500)
         if not os.path.exists("img/"):
             os.makedirs("img/")
-        driver.save_screenshot(f'img/{datetime.datetime.now().strftime("%H:%M:%S %d-%m-%y")}.png')
+        driver.save_screenshot(f'img/{datetime.now().strftime("%H:%M:%S %d-%m-%y")}.png')
         response = driver.page_source
         driver.close()
         driver.quit()
