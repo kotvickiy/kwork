@@ -83,8 +83,11 @@ def get_data(html):
         except:
             offers = 0
         if offers < 4 and (re.search(pattern, name) or re.search(pattern, description)):
-            temp_price = block.find('div', class_='wants-card__header-price wants-card__price m-hidden').text.strip().split()
-            price = temp_price[-3] + temp_price[-2]
+            try:
+                temp_price = block.find('div', class_='wants-card__header-price wants-card__price m-hidden').text.strip().split()
+                price = temp_price[-3] + temp_price[-2]
+            except:
+                price = "0"
             link = block.find('div', class_='wants-card__header-title').a['href']
 
             data = {'name': name, 'price': price, 'link': link}
@@ -116,7 +119,7 @@ def verify_news():
 
 
 def main():
-    try:
+    # try:
         if glob.glob("img/*.png"):
             for f in glob.glob("img/*.png"):
                 os.remove(f)
@@ -125,8 +128,8 @@ def main():
         else:
             save(get_data_pages())
         print("[ + ]", datetime.now().strftime('%d-%m-%Y %H:%M:%S'))
-    except Exception as ex:
-        print(f"[ - ] {datetime.now().strftime('%d-%m-%Y %H:%M:%S')} {ex}")
+    # except Exception as ex:
+    #     print(f"[ - ] {datetime.now().strftime('%d-%m-%Y %H:%M:%S')} {ex}")
         
 
 if __name__ == "__main__":
